@@ -1,0 +1,59 @@
+{
+	"author": "mp <mp@tcs.de> (www.tcs.de)",
+	"name": "mysql-factory",
+	"description": "ORM solution for mysql. Has been poirted form an internal project to open-source by updateing to the newest node-mysql version.",
+	"keywords": [
+		"mysql",
+		"orm",
+		"model",
+		"factory",
+		"table",
+		"crud",
+		"db",
+		"database",
+		"simple"
+	],
+	"tags": [
+		"mysql",
+		"orm",
+		"model",
+		"factory",
+		"table",
+		"crud",
+		"db",
+		"database",
+		"simple"
+	],
+	"version": "1.2.2",
+	"homepage": "http://mpneuried.github.com/mysql-factory/",
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/mpneuried/mysql-factory.git"
+	},
+	"engines": {
+		"node": "> 0.8.*"
+	},
+	"scripts": {
+		"test": "grunt build"
+	},
+	"main": "./index.js",
+	"dependencies": {
+		"async": "^2.5.0",
+		"bcrypt": "^1.0.2",
+		"colors": "^1.1.2",
+		"extend": "^3.0.1",
+		"lodash": "^4.17.4",
+		"moment": "^2.18.1",
+		"pg": "7.1.x",
+		"sqlstring": "^2.2.0"
+	},
+	"devDependencies": {
+		"grunt": "1.x",
+		"grunt-cli": "1.2.x",
+		"grunt-contrib-coffee": "1.x",
+		"grunt-contrib-watch": "1.x",
+		"grunt-include-replace": "5.x",
+		"grunt-mocha-cli": "3.x",
+		"should": "11.x"
+	}
+}

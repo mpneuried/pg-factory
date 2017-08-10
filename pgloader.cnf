@@ -1,0 +1,16 @@
+load database
+     from      mysql://root:xxx@localhost/milonst_live
+     into postgresql://mathiaspeter@localhost/milonst
+
+ WITH include drop, create tables, no truncate,
+      create indexes, reset sequences, foreign keys
+
+  SET maintenance_work_mem to '128MB', work_mem to '12MB', search_path to 'milonst'
+
+ CAST type datetime to timestamptz
+                drop default drop not null using zero-dates-to-null,
+      type date drop not null drop default using zero-dates-to-null
+
+ -- Create the database in postgresql to import into. If your db already exist this can be skipped
+ BEFORE LOAD DO
+ $$ create schema if not exists milonst; $$;
