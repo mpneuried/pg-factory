@@ -1,6 +1,6 @@
 {
 	"author": "mp <mp@tcs.de> (www.tcs.de)",
-	"name": "mysql-factory",
+	"name": "pg-factory",
 	"description": "ORM solution for mysql. Has been poirted form an internal project to open-source by updateing to the newest node-mysql version.",
 	"keywords": [
 		"mysql",
@@ -24,14 +24,14 @@
 		"database",
 		"simple"
 	],
-	"version": "1.2.2",
-	"homepage": "http://mpneuried.github.com/mysql-factory/",
+	"version": "0.0.1",
+	"homepage": "http://mpneuried.github.com/pg-factory/",
 	"repository": {
 		"type": "git",
-		"url": "git://github.com/mpneuried/mysql-factory.git"
+		"url": "git://github.com/mpneuried/pg-factory.git"
 	},
 	"engines": {
-		"node": "> 0.8.*"
+		"node": "> 4.*"
 	},
 	"scripts": {
 		"test": "grunt build"

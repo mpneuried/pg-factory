@@ -20,13 +20,13 @@ bcrypt = require( "bcrypt" )
 # import the internal modules
 utils = require( "./utils" )
 
-# # MySQL Dynamo Table
+# # Postgres Dynamo Table
 # ### extends [Basic](basic.coffee.html)
 
 _joinTypes = [ "inner", "left outer", "right outer" ]
 
 # Work with the data of a table
-module.exports = class MySQLTable extends require( "./basic" )
+module.exports = class PostgresTable extends require( "./basic" )
 
 	# define the defaults
 	defaults: =>
@@ -57,7 +57,7 @@ module.exports = class MySQLTable extends require( "./basic" )
 	###	
 	## constructor 
 
-	`new MySQLTable( _model_settings, options )`
+	`new PostgresTable( _model_settings, options )`
 	
 	Define the getter and setter and configure teh table.
 
@@ -272,7 +272,7 @@ module.exports = class MySQLTable extends require( "./basic" )
 		if not jSett.table?
 			@_handleError( cb, "missing-join-table", { self: @tablename } )
 			return false
-		else if jSett.table not instanceof MySQLTable
+		else if jSett.table not instanceof PostgresTable
 			_table = @factory.get( jSett.table )
 			if not _table?
 				@_handleError( cb, "invalid-join-table", { self: @tablename, foreign: jSett.table } )
@@ -848,4 +848,4 @@ module.exports = class MySQLTable extends require( "./basic" )
 			"invalid-join-field": "You have to define a vailid field `<%= field %>` of the table `<%= self %>`"
 			"invalid-join-foreignfield": "You have to define a vailid field `<%= field %>` of the table `<%= foreign %>` to join the table `<%= self %>`"
 			"missing-join-table": "You have to define a foreign table joining this table `<%= self %>`"
-			"invalid-join-table": "You have to define a existing foreign table `<%= foreign %>` as string or MySQLTable instance to join to this table `<%= self %>`"
+			"invalid-join-table": "You have to define a existing foreign table `<%= foreign %>` as string or PostgresTable instance to join to this table `<%= self %>`"

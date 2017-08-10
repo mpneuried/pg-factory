@@ -1,7 +1,7 @@
 _CONFIG = require './config'
 
 
-MySQLFactory = require( "../." )
+PgFactory = require( "../." )
 
 
 _map = require( "lodash/map" )
@@ -20,16 +20,16 @@ cbMulti = ( count, cb )->
 			cb()
 		return
 
-console.log "\nCONFIG:\n", _CONFIG.mysql
+console.log "\nCONFIG:\n", _CONFIG.pg
 
-describe "----- MySQL Factory TESTS -----", ->
+describe "----- Postgres Factory TESTS -----", ->
 	before ( done )->
 		done()
 		return
 
 	describe 'Initialization', ->
 		it 'init factory', ( done )->
-			DBFactory = new MySQLFactory( _CONFIG.mysql, _CONFIG.tables )
+			DBFactory = new PgFactory( _CONFIG.pg, _CONFIG.tables )
 			done()
 			return
 

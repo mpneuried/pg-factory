@@ -1,23 +1,19 @@
-mysql-factory
+pg-factory
 =============
 
-[![Build Status](https://david-dm.org/mpneuried/mysql-factory.png)](https://david-dm.org/mpneuried/mysql-factory)
-[![NPM version](https://badge.fury.io/js/mysql-factory.png)](http://badge.fury.io/js/mysql-factory)
+[![Build Status](https://david-dm.org/mpneuried/pg-factory.png)](https://david-dm.org/mpneuried/pg-factory)
+[![NPM version](https://badge.fury.io/js/pg-factory.png)](http://badge.fury.io/js/pg-factory)
 
-MySQL ORM solution to simplify the usage of the mysql connector.
+pg ORM solution to simplify the usage of the pg connector.
 
-[![NPM](https://nodei.co/npm/mysql-factory.png?downloads=true&stars=true)](https://nodei.co/npm/mysql-factory/)
+[![NPM](https://nodei.co/npm/pg-factory.png?downloads=true&stars=true)](https://nodei.co/npm/pg-factory/)
 
 ## Release History
 |Version|Date|Description|
 |:--:|:--:|:--|
-|1.2.2|2017-08-10|Updated dependencies|
-|1.2.1|2016-08-10|Fixed empty id list in mget|
-|1.2.0|2016-07-18|Added table default limit configuration|
-|1.1.0|2016-07-08|Added `_customQueryFilter` option to teh methods `.get`, `.mget`, `.has`, `.del` and `._update` |
-|1.0.0|2016-05-09|String-ID with numbers; Updated dependencies. Especially lodash to 4.x|
+|0.0.1|2017-08-10|Initial transformed module from mysql-factory|
 
-[![NPM](https://nodei.co/npm-dl/mysql-factory.png?months=6)](https://nodei.co/npm/mysql-factory/)
+[![NPM](https://nodei.co/npm-dl/pg-factory.png?months=6)](https://nodei.co/npm/pg-factory/)
 
 ## Other projects
 
@@ -46,7 +42,7 @@ MySQL ORM solution to simplify the usage of the mysql connector.
 
 ## The MIT License (MIT)
 
-Copyright © 2016 M. Peter, http://www.tcs.de
+Copyright © 2017 M. Peter, http://www.tcs.de
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

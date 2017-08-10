@@ -34,9 +34,9 @@ module.exports = ( options, escape = SqlString.escape )->
 		# define the defaults
 		defaults: =>
 			@extend super,
-				# **fields** *String* MySQL default fields
+				# **fields** *String* Postgres default fields
 				fields: ["*"]
-				# **limit** *Number* MySQL default limit
+				# **limit** *Number* Postgres default limit
 				limit: 1000
 				# **standardFilterCombine** *String* Standard where expression
 				standardFilterCombine: "AND"

@@ -2,15 +2,15 @@ utils = require( "../lib/utils" )
 _envVars = process.env
 
 module.exports  =
-	mysql:
+	pg:
 		showQueryTime: true
-		host: if _envVars.MYSQLFAC_TEST_HOST? then _envVars.MYSQLFAC_TEST_HOST else 'localhost'
-		user: if _envVars.MYSQLFAC_TEST_USER? then _envVars.MYSQLFAC_TEST_USER else 'root'
-		password : if _envVars.MYSQLFAC_TEST_PW? then _envVars.MYSQLFAC_TEST_PW else 'root'
-		database: if _envVars.MYSQLFAC_TEST_DB? then _envVars.MYSQLFAC_TEST_DB else "mysql-factory-test"
+		host: if _envVars.PGFAC_TEST_HOST? then _envVars.PGFAC_TEST_HOST else 'localhost'
+		user: if _envVars.PGFAC_TEST_USER? then _envVars.PGFAC_TEST_USER else 'root'
+		password : if _envVars.PGFAC_TEST_PW? then _envVars.PGFAC_TEST_PW else 'root'
+		database: if _envVars.PGFAC_TEST_DB? then _envVars.PGFAC_TEST_DB else "pg-factory-test"
 		timezone: "+0200"
 		logging:
-			severity: if _envVars.MYSQLFAC_TEST_SEVERITY? then _envVars.MYSQLFAC_TEST_SEVERITY else "warning"
+			severity: if _envVars.PGFAC_TEST_SEVERITY? then _envVars.PGFAC_TEST_SEVERITY else "warning"
 	###
 		returnFormat: ( err, result )=>
 			oReturn = {}
