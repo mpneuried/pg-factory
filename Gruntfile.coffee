@@ -20,7 +20,7 @@ module.exports = (grunt) ->
 			options:
 				require: [ "should" ]
 				reporter: "spec"
-				bail: false
+				bail: ( if process.env.PGFAC_BAIL? then true else false )
 				timeout: 7500
 				slow: 3
 

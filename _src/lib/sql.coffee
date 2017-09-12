@@ -141,12 +141,13 @@ module.exports = ( options, escape = SqlString.escape )->
 		Create a insert statement
 		
 		@param { Object } attributes Attributes to save 
+		@param { Object } options Options to generate the sql
 		
 		@return { String } Insert statement 
 		
 		@api public
 		###
-		insert: ( attributes )=>
+		insert: ( attributes, options = {}  )=>
 
 			attributes = @_validateAttributes( true, attributes )
 
@@ -154,9 +155,14 @@ module.exports = ( options, escape = SqlString.escape )->
 			statement.push "INSERT INTO #{ @schema }.#{ @table }"
 
 			[ _keys, _vals ] = @_getSaveVariables( attributes, true )
-			
+			for _key, idx in _keys when _key isnt _key.toLowerCase()
+				_keys[ idx ] = "\"#{_key}\""
+
 			statement.push( "( #{ _keys.join( ", " )} )" ) 
-			statement.push( "VALUES ( #{ _vals.join( ", " ) } ) RETURNING #{ @idField }" )
+			statement.push( "VALUES ( #{ _vals.join( ", " ) } )" )
+				
+			if not options.noReturn
+				statement.push( "RETURNING *" )
 			return _compact( statement ).join( "\n" )
 
 		###
@@ -167,12 +173,13 @@ module.exports = ( options, escape = SqlString.escape )->
 		Create a update statement
 		
 		@param { Object } attributes Attributes to update 
+		@param { Object } options Options to generate the sql
 		
 		@return { String } update statement 
 		
 		@api public
 		###
-		update: ( attributes )=>
+		update: ( attributes, options = {} )=>
 
 			attributes = @_validateAttributes( false, attributes )
 
@@ -183,11 +190,16 @@ module.exports = ( options, escape = SqlString.escape )->
 
 			_sets = []
 			for _key, _idx in _keys
+				if _key isnt _key.toLowerCase()
+					_key = "\"#{_key}\""
 				_sets.push( "#{ _key } = #{ _vals[ _idx ] }" ) 
 			
 			statement.push( "SET #{ _sets.join( ", " ) }" )
 
 			statement.push @where
+			
+			if not options.noReturn
+				statement.push( "RETURNING *" )
 
 			return _compact( statement ).join( "\n" )
 
@@ -250,16 +262,21 @@ module.exports = ( options, escape = SqlString.escape )->
 		
 		Create a delete statement
 		
+		@param { Object } options Options to generate the sql
+
 		@return { String } delete statement 
 		
 		@api public
 		###
-		del: =>
+		del: ( options = {} )=>
 			statement = []
 			statement.push "DELETE"
 			statement.push "FROM #{ @schema }.#{ @table }"
 
 			statement.push @where
+
+			if not options.noReturn
+				statement.push( "RETURNING *" )
 
 			return _compact( statement ).join( "\n" )
 
@@ -313,7 +330,7 @@ module.exports = ( options, escape = SqlString.escape )->
 					_filter += "in ( #{ escape( pred ) })"
 				else if _isDate( pred )
 					# simple date filter
-					_filter += "=  #{ escape( pred.toString() ) }"
+					_filter += "= #{ escape( pred.toString() ) }"
 				else
 					# complex predicate filter
 					_operand = Object.keys( pred )[ 0 ]
@@ -504,7 +521,7 @@ module.exports = ( options, escape = SqlString.escape )->
 							if not value? or _isEmpty( value )
 								return {}
 							try
-								return JSON.parse( value )
+								return JSON.parse( value.replace( "\\\"", "\"" ) )
 							catch
 								@error "JSON parse error", value
 								return {}
@@ -865,6 +882,8 @@ module.exports = ( options, escape = SqlString.escape )->
 			if @_c.fields?.length
 				_fdls = []
 				for field in @_c.fields
+					if field isnt field.toLowerCase()
+						field = "\"#{field}\""
 					if field.indexOf( " " ) < 0
 						_fdls.push( "#{@table}.#{field}" )
 					else
@@ -1086,7 +1105,7 @@ module.exports = ( options, escape = SqlString.escape )->
 							# create regular values
 							if not _val?
 								_vals.push( "NULL" )
-							else if _val?[ ..2 ] is "IF("
+							else if _val?[ ..2 ] is "IF(" or _val?[ ..4 ] is "(CASE"
 								_vals.push( _val )
 							else
 								_vals.push( escape( _val ) )
@@ -1112,7 +1131,7 @@ module.exports = ( options, escape = SqlString.escape )->
 								if _count < 0
 									_operand = "-"
 									_count = _count * -1
-								_vals.push( "( CASE WHEN #{ _key } is NULL THEN #{ if _operand is "+" then 1 else 0 } ELSE #{ _key } #{ _operand } #{ _count } END )" )
+								_vals.push( "(CASE WHEN #{ _key } is NULL THEN #{ if _operand is "+" then 1 else 0 } ELSE #{ _key } #{ _operand } #{ _count } END )" )
 							
 							else
 								_vals.push( escape( parseFloat( _val ) ) )
@@ -1133,7 +1152,7 @@ module.exports = ( options, escape = SqlString.escape )->
 								_vals.push( escape( "{}" ) )
 							else
 								try
-									_vals.push( escape( JSON.stringify( _val ) ) )
+									_vals.push( "'" + JSON.stringify( _val ) + "'" )
 							_keys.push( _key )
 
 						when "timestamp", "T"
@@ -1196,9 +1215,9 @@ module.exports = ( options, escape = SqlString.escape )->
 
 		# **_generateSetCommandTmpls** *Object* Underscore templates for the set sql commands. Used by the method `_generateSetCommand`
 		_generateSetCommandTmpls:
-			add: _template( '( CASE WHEN INSTR( <%= set %>,"<%= val %><%= dlm %>") = 0 THEN "<%= val %><%= dlm %>" ELSE "" ) END' )
+			add: _template( '(CASE WHEN INSTR( <%= set %>,"<%= val %><%= dlm %>") = 0 THEN "<%= val %><%= dlm %>" ELSE "" ) END' )
 			rem: _template( 'REPLACE( <%= set %>, "<%= dlm %><%= val %><%= dlm %>", "<%= dlm %>")' )
-			set: _template( '( CASE WHEN <%= key %> is NULL THEN "<%= dlm %>" ELSE <%= key %> END )' )
+			set: _template( '(CASE WHEN <%= key %> is NULL THEN "<%= dlm %>" ELSE <%= key %> END )' )
 
 		###
 		## _generateSetCommand

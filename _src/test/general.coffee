@@ -28,14 +28,14 @@ describe "----- Postgres Factory TESTS -----", ->
 		return
 
 	describe 'Initialization', ->
-		it 'init factory', ( done )->
+		it "1. init factory", ( done )->
 			DBFactory = new PgFactory( _CONFIG.pg, _CONFIG.tables )
 			done()
 			return
 
 	describe 'Factory Tests', ->
 		
-		it "List the existing tables", ( done )->
+		it "2. List the existing tables", ( done )->
 			DBFactory.list ( err, tables )->
 				throw err if err
 
@@ -44,7 +44,7 @@ describe "----- Postgres Factory TESTS -----", ->
 				done()
 			return
 
-		it "Get a table", ( done )->
+		it "3. Get a table", ( done )->
 
 			_cnf = _CONFIG.tables[ _CONFIG.test.singleCreateTableTest ]
 
@@ -55,7 +55,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			done()
 			return
 
-		it "Try to get a not existend table", ( done )->
+		it "4. Try to get a not existend table", ( done )->
 
 			_tbl = DBFactory.get( "notexistend" )
 			should.not.exist( _tbl )
@@ -63,7 +63,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			done()
 			return
 
-		it "has for existend table", ( done )->
+		it "5. has for existend table", ( done )->
 
 			_has = DBFactory.has( _CONFIG.test.singleCreateTableTest )
 			_has.should.be.true
@@ -71,7 +71,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			done()
 			return
 
-		it "has for not existend table", ( done )->
+		it "6. has for not existend table", ( done )->
 
 			_has = DBFactory.has( "notexistend" )
 			_has.should.be.false
@@ -93,7 +93,7 @@ describe "----- Postgres Factory TESTS -----", ->
 
 		_testUsers = []
 
-		it "get test table `#{_CONFIG.test.getTest.tbl}`", ( done )->
+		it "7. get test table `#{_CONFIG.test.getTest.tbl}`", ( done )->
 
 			tableU = DBFactory.get( _CONFIG.test.getTest.tbl )
 			tableU?.name?.should.eql( _CONFIG.test.getTest.tbl )
@@ -101,7 +101,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			done()
 			return
 
-		it "get test table `#{_CONFIG.test.tokenTable}`", ( done )->
+		it "8. get test table `#{_CONFIG.test.tokenTable}`", ( done )->
 
 			tableT = DBFactory.get( _CONFIG.test.tokenTable )
 			tableT?.name?.should.eql( _CONFIG.test.tokenTable )
@@ -109,7 +109,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			done()
 			return
 
-		it "get test table `#{_CONFIG.test.contractsTable}`", ( done )->
+		it "9. get test table `#{_CONFIG.test.contractsTable}`", ( done )->
 
 			tableC = DBFactory.get( _CONFIG.test.contractsTable )
 			tableC?.name?.should.eql( _CONFIG.test.contractsTable )
@@ -117,7 +117,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			done()
 			return
 
-		it "TABLE.GET", ( done )->
+		it "10. TABLE.GET", ( done )->
 			_id =  _CONFIG.test.getTest.id
 			tableU.get _id, ( err, item )->
 				throw err if err
@@ -127,7 +127,7 @@ describe "----- Postgres Factory TESTS -----", ->
 				return
 			return
 
-		it "TABLE.GET fields as array", ( done )->
+		it "11. TABLE.GET fields as array", ( done )->
 
 			_id =  _CONFIG.test.getTest.id
 			tableU.get( _id, ( err, item )->
@@ -142,7 +142,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, fields: fieldsTest )
 			return
 
-		it "TABLE.GET fields as string", ( done )->
+		it "12. TABLE.GET fields as string", ( done )->
 
 			_id =  _CONFIG.test.getTest.id
 			tableU.get( _id, ( err, item )->
@@ -156,7 +156,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, fields: fieldsTest.join( ", " ) )
 			return
 
-		it "TABLE.GET fields as set", ( done )->
+		it "13. TABLE.GET fields as set", ( done )->
 
 			_id =  _CONFIG.test.getTest.id
 			tableU.get( _id, ( err, item )->
@@ -170,7 +170,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, fields: "set:test" )
 			return
 
-		it "TABLE.GET fields `all`", ( done )->
+		it "14. TABLE.GET fields `all`", ( done )->
 
 			_id =  _CONFIG.test.getTest.id
 			tableU.get( _id, ( err, item )->
@@ -183,7 +183,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, fields: "all" )
 			return
 
-		it "TABLE.GET fields `*`", ( done )->
+		it "15. TABLE.GET fields `*`", ( done )->
 
 			_id =  _CONFIG.test.getTest.id
 			tableU.get( _id, ( err, item )->
@@ -197,7 +197,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, fields: "all" )
 			return
 
-		it "TABLE.GET fields `idonly`", ( done )->
+		it "16. TABLE.GET fields `idonly`", ( done )->
 
 			_id =  _CONFIG.test.getTest.id
 			tableU.get( _id, ( err, item )->
@@ -211,7 +211,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, fields: "idonly" )
 			return
 
-		it "TABLE.GET fields by filter function", ( done )->
+		it "17. TABLE.GET fields by filter function", ( done )->
 
 			_id =  _CONFIG.test.getTest.id
 			tableU.get( _id, ( err, item )->
@@ -227,7 +227,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			return
 		
 		
-		it "TABLE.MGET", ( done )->
+		it "18. TABLE.MGET", ( done )->
 
 			_ids = JSON.parse( JSON.stringify( _CONFIG.test.mgetTest.id ) )
 			tableU.mget _ids, ( err, items )->
@@ -239,7 +239,7 @@ describe "----- Postgres Factory TESTS -----", ->
 
 			return
 			
-		it "TABLE.MGET empty", ( done )->
+		it "19. TABLE.MGET empty", ( done )->
 
 			tableU.mget [], ( err, items )->
 				throw err if err
@@ -249,7 +249,7 @@ describe "----- Postgres Factory TESTS -----", ->
 
 			return
 			
-		it "TABLE.FIND all", ( done )->
+		it "20. TABLE.FIND all", ( done )->
 			@timeout( 6000 )
 			tableU.find {}, ( err, items )->
 				throw err if err
@@ -259,7 +259,7 @@ describe "----- Postgres Factory TESTS -----", ->
 
 			return
 		
-		it "TABLE.FIND query", ( done )->
+		it "21. TABLE.FIND query", ( done )->
 			@timeout( 6000 )
 			query = JSON.parse( JSON.stringify( _CONFIG.test.findTest.q ) )
 			tableU.find query, ( err, items )->
@@ -270,7 +270,7 @@ describe "----- Postgres Factory TESTS -----", ->
 
 			return
 
-		it "TABLE.FIND with limit", ( done )->
+		it "22. TABLE.FIND with limit", ( done )->
 			@timeout( 6000 )
 			query = JSON.parse( JSON.stringify( _CONFIG.test.findTest.q ) )
 			query.limit = 1
@@ -282,7 +282,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, {} )
 			return
 
-		it "TABLE.FIND with limit by option", ( done )->
+		it "23. TABLE.FIND with limit by option", ( done )->
 			@timeout( 6000 )
 			query = JSON.parse( JSON.stringify( _CONFIG.test.findTest.q ) )
 			tableU.find( query, ( err, items )->
@@ -293,7 +293,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, { limit: 1 } )
 			return
 
-		it "TABLE.FIND with `idonly`", ( done )->
+		it "24. TABLE.FIND with `idonly`", ( done )->
 			@timeout( 6000 )
 			query = JSON.parse( JSON.stringify( _CONFIG.test.findTest.q ) )
 			tableU.find( query, ( err, items )->
@@ -307,7 +307,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, { fields: "idonly" } )
 			return
 
-		it "TABLE.FIND studio tokens with subquery", ( done )->
+		it "25. TABLE.FIND studio tokens with subquery", ( done )->
 
 			query =
 				token:
@@ -332,7 +332,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, opt )
 			return
 
-		it "TABLE.FIND studio users with subquery", ( done )->
+		it "26. TABLE.FIND studio users with subquery", ( done )->
 
 			query =
 				"id":
@@ -355,7 +355,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, opt )
 			return
 		
-		it "TABLE.FIND studio tokens with TABLE.JOIN", ( done )->
+		it "27. TABLE.FIND studio tokens with TABLE.JOIN", ( done )->
 
 			query =
 				token:
@@ -383,7 +383,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			return
 
 		
-		it "TABLE.FIND studio users with TABLE.JOIN with table instance", ( done )->
+		it "28. TABLE.FIND studio users with TABLE.JOIN with table instance", ( done )->
 
 			query = {}
 
@@ -406,7 +406,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, opt )
 			return
 
-		it "TABLE.JOIN without table", ( done )->
+		it "29. TABLE.JOIN without table", ( done )->
 
 			query = {}
 
@@ -429,7 +429,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, opt )
 			return
 
-		it "TABLE.JOIN without field", ( done )->
+		it "30. TABLE.JOIN without field", ( done )->
 
 			query =
 				studio_id: 1
@@ -452,7 +452,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, opt )
 			return
 
-		it "TABLE.JOIN with invalid field", ( done )->
+		it "31. TABLE.JOIN with invalid field", ( done )->
 
 			query = {}
 
@@ -475,7 +475,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, opt )
 			return
 
-		it "TABLE.JOIN with invalid foreign field", ( done )->
+		it "32. TABLE.JOIN with invalid foreign field", ( done )->
 
 			query = {}
 
@@ -498,7 +498,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, opt )
 			return
 
-		it "TABLE.JOIN with invalid table", ( done )->
+		it "33. TABLE.JOIN with invalid table", ( done )->
 
 			query = {}
 
@@ -521,7 +521,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, opt )
 			return
 
-		it "TABLE.JOIN with invalid type", ( done )->
+		it "34. TABLE.JOIN with invalid type", ( done )->
 
 			query = {}
 
@@ -546,7 +546,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			return
 		
 		###
-		it "TABLE.FIND with option `_customQueryFilter`", ( done )->
+		it "35. TABLE.FIND with option `_customQueryFilter`", ( done )->
 
 			query = _CONFIG.test.findTest.q
 			tableU.find( query, ( err, items )->
@@ -559,7 +559,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			return
 		###
 
-		it "TABLE.FIND with invalid filter", ( done )->
+		it "36. TABLE.FIND with invalid filter", ( done )->
 
 			tableU.find "wrong", ( err, items )->
 				should.exist( err )
@@ -569,7 +569,7 @@ describe "----- Postgres Factory TESTS -----", ->
 				return
 			return
 			
-		it "TABLE.FIND with complex filter", ( done )->
+		it "37. TABLE.FIND with complex filter", ( done )->
 			ts = 1381322463000
 			query =
 				user_id: "swDqh"
@@ -591,7 +591,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			
 			
 
-		it "TABLE.INSERT string-id", ( done )->
+		it "38. TABLE.INSERT string-id", ( done )->
 			data =
 				firstname: "Test"
 				lastname: "Test"
@@ -619,7 +619,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, {} )
 			return
 
-		it "TABLE.INSERT second test case", ( done )->
+		it "39. TABLE.INSERT second test case", ( done )->
 			data =
 				firstname: "Test2"
 				lastname: "Test"
@@ -646,7 +646,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, {} )
 			return
 
-		it "TABLE.INSERT third test case", ( done )->
+		it "40. TABLE.INSERT third test case", ( done )->
 			data =
 				firstname: "Test3"
 				lastname: "Test"
@@ -673,7 +673,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, {} )
 			return
 
-		it "TABLE.INSERT fourth test case", ( done )->
+		it "41. TABLE.INSERT fourth test case", ( done )->
 			data =
 				firstname: "Test4"
 				lastname: "Test"
@@ -700,7 +700,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, {} )
 			return
 
-		it "TABLE.INSERT with createId function", ( done )->
+		it "42. TABLE.INSERT with createId function", ( done )->
 			_tbl = DBFactory.get( "Apikeys" )
 			
 			data =
@@ -718,7 +718,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, {} )
 			return
 		
-		it "TABLE.INSERT autoincrement-id", ( done )->
+		it "43. TABLE.INSERT autoincrement-id", ( done )->
 			data = JSON.parse( JSON.stringify( _CONFIG.test.insertTestToken ) )
 			tableT.set( data, ( err, item )->
 				throw err if err
@@ -735,7 +735,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, {} )
 			return
 
-		it "TABLE.INSERT predefined string-id", ( done )->
+		it "44. TABLE.INSERT predefined string-id", ( done )->
 			_id = _utils.randomString( 5 )
 			data =
 				id: _id
@@ -766,7 +766,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			return
 
 	
-		it "TABLE.INSERT existing predefined string-id", ( done )->
+		it "45. TABLE.INSERT existing predefined string-id", ( done )->
 			data =
 				id: _CONFIG.test.getTest.id
 				firstname: "Test"
@@ -783,7 +783,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, {} )
 			return
 
-		it "TABLE.UPDATE", ( done )->
+		it "46. TABLE.UPDATE", ( done )->
 			data =
 				lastname: "Update1"
 				_t: _saveUserT
@@ -800,7 +800,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, {} )
 			return
 
-		it "TABLE.UPDATE with crypting passowrd", ( done )->
+		it "47. TABLE.UPDATE with crypting passowrd", ( done )->
 			data =
 				lastname: "Update2"
 				password: "test"
@@ -822,7 +822,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, {} )
 			return
 		
-		it "TABLE.UPDATE with event check", ( done )->
+		it "48. TABLE.UPDATE with event check", ( done )->
 			data =
 				lastname: "Update3"
 				birthday: new Date( 1950,5,15 )
@@ -889,7 +889,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, {} )
 			return
 
-		it "TABLE.UPDATE with invalid role", ( done )->
+		it "49. TABLE.UPDATE with invalid role", ( done )->
 
 			data =
 				lastname: "Update4"
@@ -906,7 +906,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, {} )
 			return
 
-		it "TABLE.UPDATE with with json object", ( done )->
+		it "50. TABLE.UPDATE with with json object", ( done )->
 			data =
 				lastname: "Update5"
 				jsonSettings:
@@ -916,7 +916,7 @@ describe "----- Postgres Factory TESTS -----", ->
 
 			tableU.set( _saveUserId, data, ( err, item )->
 				throw err if err
-
+				
 				item.should.have.property('lastname').and.equal( "Update5" )
 
 				item.should.have.property('jsonSettings').and.eql
@@ -926,12 +926,14 @@ describe "----- Postgres Factory TESTS -----", ->
 				item.should.have.property('_u').and.equal( 4 )
 				item.should.have.property('_t').and.be.within( _saveUserT, +Infinity )
 
+				_saveUserT = item._t
+
 				done()
 				return
 			, {} )
 			return
 
-		it "TABLE.UPDATE with wrong `_t` check", ( done )->
+		it "51. TABLE.UPDATE with wrong `_t` check", ( done )->
 			data =
 				lastname: "Update6"
 				_t: _startTime
@@ -955,7 +957,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, {} )
 			return
 
-		it "TABLE.UPDATE without `_t", ( done )->
+		it "52. TABLE.UPDATE without `_t", ( done )->
 			data =
 				lastname: "Update7b"
 
@@ -972,7 +974,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, {} )
 			return
 
-		it "TABLE.UPDATE try a manual of `_u`", ( done )->
+		it "53. TABLE.UPDATE try a manual of `_u`", ( done )->
 			data =
 				lastname: "Update7"
 				_u: 99
@@ -992,7 +994,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, {} )
 			return
 
-		it "TABLE.UPDATE with existing `mail`", ( done )->
+		it "54. TABLE.UPDATE with existing `mail`", ( done )->
 			data =
 				lastname: "Update7"
 				email: "testmilon@test.de"
@@ -1015,7 +1017,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, {} )
 			return
 
-		it "TABLE.UPDATE date fields as `Date`", ( done )->
+		it "55. TABLE.UPDATE date fields as `Date`", ( done )->
 			_date = new Date()
 			data =
 				lastname: "Update8"
@@ -1040,7 +1042,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, {} )
 			return
 
-		it "TABLE.UPDATE date fields as `Number` in ms", ( done )->
+		it "56. TABLE.UPDATE date fields as `Number` in ms", ( done )->
 			_date = new Date().getTime()
 			data =
 				lastname: "Update9"
@@ -1065,7 +1067,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, {} )
 			return
 
-		it "TABLE.UPDATE date fields as `Number` in s", ( done )->
+		it "57. TABLE.UPDATE date fields as `Number` in s", ( done )->
 			_date = Math.round( new Date().getTime() / 1000 )
 			data =
 				lastname: "Update10"
@@ -1090,7 +1092,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, {} )
 			return
 
-		it "TABLE.UPDATE date fields as `String`", ( done )->
+		it "58. TABLE.UPDATE date fields as `String`", ( done )->
 			_date = moment( moment().format( "YYYY-MM-DD HH:mm" ), "YYYY-MM-DD HH:mm" )
 			data =
 				lastname: "Update11"
@@ -1115,7 +1117,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, {} )
 			return
 
-		it "TABLE.HAS", ( done )->
+		it "59. TABLE.HAS", ( done )->
 			tableU.has( _saveUserId, ( err, existend )->
 				throw err if err
 				existend.should.be.ok
@@ -1124,7 +1126,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, {} )
 			return
 
-		it "TABLE.HAS not existend", ( done )->
+		it "60. TABLE.HAS not existend", ( done )->
 			tableU.has( "notexist", ( err, existend )->
 				throw err if err
 				existend.should.not.be.ok
@@ -1133,7 +1135,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, {} )
 			return
 
-		it "TABLE.COUNT", ( done )->
+		it "61. TABLE.COUNT", ( done )->
 			filter =
 				firstname: "Maxi"
 				role: "TRAINER"
@@ -1146,7 +1148,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, {} )
 			return
 
-		it "TABLE.COUNT empty", ( done )->
+		it "62. TABLE.COUNT empty", ( done )->
 			filter =
 				firstname: "Maxi"
 				role: "INVALIDROLE"
@@ -1159,7 +1161,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, {} )
 			return
 
-		it "TABLE.INCREMENT", ( done )->
+		it "63. TABLE.INCREMENT", ( done )->
 			tableU.increment( _saveUserId, "plansversion", ( err, count )->
 				throw err if err
 				should.exist( count )
@@ -1169,7 +1171,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, {} )
 			return
 
-		it "TABLE.INCREMENT second increment", ( done )->
+		it "64. TABLE.INCREMENT second increment", ( done )->
 			tableU.increment( _saveUserId, "plansversion", ( err, count )->
 				throw err if err
 				should.exist( count )
@@ -1179,7 +1181,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, {} )
 			return
 
-		it "TABLE.INCREMENT unknown field", ( done )->
+		it "65. TABLE.INCREMENT unknown field", ( done )->
 			tableU.increment( _saveUserId, "unknown", ( err, count )->
 				should.exist( err )
 				should.exist( err.name )
@@ -1193,7 +1195,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, {} )
 			return
 
-		it "TABLE.INCREMENT unknown id", ( done )->
+		it "66. TABLE.INCREMENT unknown id", ( done )->
 			tableU.increment( "unknown", "plansversion", ( err, count )->
 				should.exist( err )
 				should.exist( err.name )
@@ -1204,7 +1206,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, {} )
 			return
 
-		it "TABLE.DECREMENT", ( done )->
+		it "67. TABLE.DECREMENT", ( done )->
 			tableU.decrement( _saveUserId, "plansversion", ( err, count )->
 				throw err if err
 				should.exist( count )
@@ -1214,7 +1216,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, {} )
 			return
 
-		it "TABLE.INCREMENT unknown field", ( done )->
+		it "68. TABLE.INCREMENT unknown field", ( done )->
 			tableU.decrement( _saveUserId, "unknown", ( err, count )->
 				should.exist( err )
 				should.exist( err.name )
@@ -1228,7 +1230,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, {} )
 			return
 
-		it "TABLE.INCREMENT unknown id", ( done )->
+		it "69. TABLE.INCREMENT unknown id", ( done )->
 			tableU.decrement( "unknown", "plansversion", ( err, count )->
 				should.exist( err )
 				should.exist( err.name )
@@ -1239,10 +1241,10 @@ describe "----- Postgres Factory TESTS -----", ->
 			, {} )
 			return
 
-		it "TABLE.DEL", ( done )->
+		it "70. TABLE.DEL", ( done )->
 			
 			_usr = _testUsers[ 0 ]
-
+			
 			tableU.del( _usr.id, ( err, item )->
 				throw err if err
 
@@ -1258,7 +1260,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, {} )
 			return
 
-		it "TABLE.GET deleted", ( done )->
+		it "71. TABLE.GET deleted", ( done )->
 			
 			_usr = _testUsers[ 0 ]
 
@@ -1272,7 +1274,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, {} )
 			return
 
-		it "TABLE.DEL deleted", ( done )->
+		it "72. TABLE.DEL deleted", ( done )->
 			
 			_usr = _testUsers[ 0 ]
 			tableU.del( _usr.id, ( err, item )->
@@ -1285,7 +1287,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, {} )
 			return
 
-		it "TABLE.MDEL invalid filter", ( done )->
+		it "73. TABLE.MDEL invalid filter", ( done )->
 			_usrA = _testUsers[ 1 ]
 			_usrB = _testUsers[ 2 ]
 			ids = [ _usrA.id, _usrB.id ]
@@ -1299,7 +1301,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, {} )
 			return
 
-		it "TABLE.MDEL", ( done )->
+		it "74. TABLE.MDEL", ( done )->
 			_usrA = _testUsers[ 1 ]
 			_usrB = _testUsers[ 2 ]
 			ids = [ _usrA.id, _usrB.id ]
@@ -1312,7 +1314,7 @@ describe "----- Postgres Factory TESTS -----", ->
 			, {} )
 			return
 
-		it "TABLE.GET", ( done )->
+		it "75. TABLE.GET", ( done )->
 			_id =  _CONFIG.test.getTest.id
 			tableU.get _testUsers[ 1 ].id, ( err, item )->
 				should.exist( err )

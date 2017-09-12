@@ -97,7 +97,7 @@ module.exports  =
 				"image":	 		{ name: "image",		fieldsets: [ "ls","det" ], search: false, type: "string", validation: { fireEventOnChange: "userchanged" }  }
 				"isdeleted": 		{ name: "isdeleted",	fieldsets: [], search: false, type: "boolean" }
 				"deletedate": 		{ name: "deletedate",	fieldsets: [], search: false, type: "timestamp" }
-				"role": 			{ name: "role",			fieldsets: [ "det" ], search: false, type: "string", validation: { isRequired: true } } # , notAllowedForValue: "MILON"
+				"role": 			{ name: "role",			fieldsets: [ "det" ], search: false, type: "string", validation: { isRequired: true, notAllowedForValue: "MILON" } }
 				"trainer_id": 		{ name: "trainer_id",	fieldsets: [ "ls", "det" ], search: false, type: "string", validation: { fireEventOnChange: "userchanged" } }
 				"plansversion":		{ name: "plansversion",	fieldsets: [ "det" ], search: false, type: "number" }
 				"currplan":			{ name: "currplan",		fieldsets: [ "det" ], search: false, type: "number", validation: { fireEventOnChange: "planchanged" } }
@@ -206,6 +206,7 @@ module.exports  =
 			schema: "milonst"
 			tablename: "tokens"
 			sIdField: "id"
+			hasStringId: false
 			fields:
 				"id": 				{ name: "id",			search: false, type: "number" }
 				"user_id": 			{ name: "user_id",		search: false, type: "string", validation: { isRequired: true } }

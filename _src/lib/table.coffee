@@ -167,8 +167,9 @@ module.exports = class PostgresTable extends require( "./basic" )
 			sql.filter( options._customQueryFilter )
 			
 		sql.filter( @sIdField, id )
-
-		@factory.exec( sql.select( false ), @_handleSingle( "get", id, opt, cb ) )
+		stmt = sql.select( false )
+		
+		@factory.exec( stmt, @_handleSingle( "get", id, opt, cb ) )
 
 		return
 
@@ -424,7 +425,7 @@ module.exports = class PostgresTable extends require( "./basic" )
 			sql.filter( options._customQueryFilter )
 		
 		sql.filter( @sIdField, id )
-		stmts = [ sql.select( false ), sql.del() ]
+		stmts = [ sql.del() ]
 
 		@factory.exec( stmts, @_handleSingle( "del", id, opt, cb ) )
 
@@ -448,7 +449,7 @@ module.exports = class PostgresTable extends require( "./basic" )
 			@_handleError( cb, "no-filter" )
 			return
 
-		stmts = [ sql.select( false ), sql.del() ]
+		stmts = [ sql.del() ]
 
 		@factory.exec( stmts, @_handleSingle( "mdel", filter, opt, sql, cb ) )
 
@@ -484,8 +485,8 @@ module.exports = class PostgresTable extends require( "./basic" )
 		
 		_data = @_checkAndAddIncrementOnSave( _data, sql )
 		
-		stmt = [ sql.update( _data ), sql.select( false ) ]
-
+		stmt = [ sql.update( _data ) ]
+		opt._crement_field = field
 		@factory.exec( stmt, @_handleSingle( _type, id, opt, cb ) )
 
 		return
@@ -500,9 +501,7 @@ module.exports = class PostgresTable extends require( "./basic" )
 		
 		sql.filter( @sIdField, id )
 		
-		_getStmt = @builder.clone().filter( @sIdField, id ).select( false )
-		stmts = [ _getStmt, sql.update( data ), _getStmt ]
-
+		stmts = [ @builder.clone().filter( @sIdField, id ).select( false ), sql.update( data ) ]
 		@factory.exec( stmts, @_handleSave( "set", id, data, options, sql, cb ) )
 
 		return
@@ -519,11 +518,7 @@ module.exports = class PostgresTable extends require( "./basic" )
 			else
 				_id =  { "fn": "LAST_INSERT_ID()" }
 
-		@debug "insert", data
 		stmts = [ sql.insert( data ) ]
-
-		stmts.push @builder.clone().filter( @sIdField, _id ).select( false )
-
 		@factory.exec( stmts, @_handleSave( "set", null, data, options, sql, cb ) )
 
 		return
@@ -589,10 +584,10 @@ module.exports = class PostgresTable extends require( "./basic" )
 					# it is not allowed to write this value
 					@_handleError( cb, "value-not-allowed", field: field.name, value: _validation.notAllowedForValue )
 					return
-				else
+				else if isUpdate
 					options._changedValues[ field.name ] = data[ field.name ]
 					# if the not allowed value is saved in db it's not possible to overwite it.
-					data[ field.name ] = "( CASE WHEN #{field.name} != \"#{ _validation.notAllowedForValue }\" THEN \"#{ value }\" ELSE #{field.name} END )"
+					data[ field.name ] = "(CASE WHEN #{field.name} != '#{ _validation.notAllowedForValue }' THEN '#{ value }' ELSE #{field.name} END )"
 
 
 			# rules to be check after the return
@@ -648,35 +643,31 @@ module.exports = class PostgresTable extends require( "./basic" )
 				return
 
 			results = raw.rows
-
+			
 			if _isArray( results )
-				if type in [ "increment", "decrement", "del" ]
-					if type is "del"
-						[ _get, _save ] = results
-					else
-						[ _save, _get ] = results
-					if not _save?.affectedRows
-						@_handleError( cb, "not-found" )
-						return
-
-					results = _last( _get )
-
-				else if type in [ "mdel" ]
-					[ _get, _save ] = results
-					if not _save?.affectedRows
+				if type in [ "mdel" ]
+					if not raw?.rowCount
 						cb( null, [] )
 						return
-					results = _get
 				else
 					results = _head( results )
 
 			switch type
+				when "increment", "decrement"
+					if not raw?.rowCount
+						@_handleError( cb, "not-found" )
+						return
+					[ id, { _crement_field } ] = args
+					
+					cb( null, parseInt( results[ _crement_field ], 10 ) )
+					
+					@emit( type, null, @builder.convertToType( results ) )
 				when "has"
 					if results?.count >= 1
 						cb( null, true )
 					else
 						cb( null, false )
-				when "count", "increment", "decrement"
+				when "count"
 					if results?.count >= 1
 						cb( null, parseInt( results?.count, 10 ) )
 					else
@@ -715,6 +706,7 @@ module.exports = class PostgresTable extends require( "./basic" )
 
 	_handleSave: ( type, id, data, options, sql, cb )=>
 		return ( err, results )=>
+			
 			if err?.code is "23505"
 				err.code = "ER_DUP_ENTRY"
 
@@ -759,16 +751,14 @@ module.exports = class PostgresTable extends require( "./basic" )
 	_afterSave: ( results, id, data, options, cb )=>
 
 		if id?
-			[ _rawold, _rawinsert, _rawnew ] = results
+			[ _rawold, _rawupdate ] = results
 			_old = _rawold.rows
-			_new = _rawnew.rows
+			_newRaw = _rawupdate
+			_new = _rawupdate.rows
 		else
-			[ _rawinsert, _rawnew ] = results
-			_new = _rawnew.rows
+			_newRaw = results
+			_new = results.rows
 
-		_saveMeta =
-			insertId: _rawinsert?.rows[ 0 ]?[ @idField ]
-			affectedRows: _rawinsert?.rowCount or 0
 
 		if _new? and _isArray( _new )
 			_new = _head( _new )
@@ -776,12 +766,17 @@ module.exports = class PostgresTable extends require( "./basic" )
 		if _old? and _isArray( _old )
 			_old = _head( _old )
 
+
 		_new = @builder.convertToType( _new )
 
 		_old = @builder.convertToType( _old ) if _old?
 
+		_saveMeta =
+			insertId: _new?[ @sIdField ]
+			affectedRows: _newRaw?.rowCount or 0
+
 		# check id on insert
-		if not id? and not @hasStringId and _saveMeta.insertId isnt _new.id
+		if not id? and not @hasStringId and _saveMeta.insertId isnt _new[ @sIdField ]
 			@_handleError( cb, "wrong-insert-return" )
 
 		for _field, _val of options._afterSave when not _isEmpty( _val )
@@ -793,7 +788,7 @@ module.exports = class PostgresTable extends require( "./basic" )
 				@_handleError( cb, "validation-notequal", { field: _field, curr: _old?[ _field ], value: _errData.value }, _errData )
 				return
 
-			if id? and _val.fireEventOnChange? and _old?[ _field ] isnt _new?[ _field ]
+			if id? and _val.fireEventOnChange? and _saveMeta.affectedRows > 0 and _old?[ _field ] isnt _new?[ _field ]
 				@emit "#{ _field }.#{ _val.fireEventOnChange }", _old[ _field ], _new[ _field ], id, _new
 
 		if _saveMeta.affectedRows is 0
