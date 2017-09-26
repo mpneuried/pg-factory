@@ -3,6 +3,7 @@ _isArray = require( "lodash/isArray" )
 _omit = require( "lodash/omit" )
 _bind = require( "lodash/bind" )
 pq = require 'pg'
+SqlString = require('sqlstring')
 
 # import the internal modules
 Table = require "./table"
@@ -52,7 +53,8 @@ module.exports = class PostgresFactory extends require( "./basic" )
 
 	###
 	constructor: ( options, @tableSettings )->
-		super
+		super( options )
+		return
 
 	###
 	## initialize
@@ -187,8 +189,8 @@ module.exports = class PostgresFactory extends require( "./basic" )
 	has: ( tableName )=>
 		@_tables[ tableName ]?
 
-	escape: ( val )=>
-		return @pool.escape( val )
+	escape: ( val )->
+		return SqlString.escape( val )
 
 	###
 	## _initTables

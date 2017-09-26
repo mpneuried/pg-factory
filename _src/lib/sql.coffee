@@ -130,7 +130,7 @@ module.exports = ( options, escape = SqlString.escape )->
 		@api public
 		###
 		clone: =>
-			@log "debug", "run clone"
+			@log "debug", "run clone: (schema:#{ @schema }, table:#{ @table })"
 			return new SQLBuilder( JSON.parse( JSON.stringify( @_c ) ) )
 
 		###
@@ -313,13 +313,17 @@ module.exports = ( options, escape = SqlString.escape )->
 
 				_cnf = @_getAttrConfig( key )
 
-				if pred is null
+				if pred is null or pred is undefined
 					# is null if pred is `null`
 					_filter += "is NULL"
 				else if _isString( pred )
 					# simple `=` filter
-					if _cnf.search
+					if _cnf?.search
 						_filter += "ILIKE #{ escape( pred ) }"
+					else if _cnf?.type is "date" and pred.indexOf( "+" ) < 0
+						# set timezone GMT as default
+						_pred = "#{ pred }+00"
+						_filter += "= #{ escape( _pred ) }"
 					else
 						_filter += "= #{ escape( pred ) }"
 				else if _isNumber( pred )
@@ -521,9 +525,9 @@ module.exports = ( options, escape = SqlString.escape )->
 							if not value? or _isEmpty( value )
 								return {}
 							try
-								return JSON.parse( value.replace( "\\\"", "\"" ) )
-							catch
-								@error "JSON parse error", value
+								return JSON.parse( value )
+							catch _err
+								@error "JSON parse error: #{ _err }", value
 								return {}
 
 						when "timestamp", "T", "unixtimestamp", "U"
